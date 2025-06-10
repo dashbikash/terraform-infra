@@ -1,8 +1,8 @@
 
 resource "aws_security_group" "sg-ssh-and-80" {
-  name        = "sg_ssh_and_8080"
+  name        = "sg_ssh_and_80"
   description = "Allow inbound 8080 and outbound SSH"
-  vpc_id      = "vpc-02bcc97f32732ccfb"
+  vpc_id      = local.vpc_id
 
   ingress {
     description = "Allow HTTP 80"
@@ -34,20 +34,28 @@ resource "aws_security_group" "sg-ssh-and-80" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+
 }
 
 
 resource "aws_security_group" "sg-http80-only" {
   name        = "sg_http80_only"
   description = "Allow inbound 80"
-  vpc_id      = "vpc-02bcc97f32732ccfb"
+  vpc_id      = local.vpc_id
 
   ingress {
-    description = "Allow HTTP 8080"
+    description = "Allow HTTP 80"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 
 }
