@@ -1,0 +1,43 @@
+resource "aws_elasticache_subnet_group" "elasticache_subnet_group_demo" {
+    name       = "elasticache-subnet-group-demo"
+    subnet_ids = local.subnets
+    description = "Elasticache subnet group for demo"
+}
+
+resource "aws_elasticache_cluster" "elasticache_demo" {
+    cluster_id           = "elasticache-demo"
+    engine               = "redis"
+    node_type            = "cache.t2.micro"
+    num_cache_nodes      = 1
+    parameter_group_name = "default.redis7"
+    subnet_group_name    = aws_elasticache_subnet_group.elasticache_subnet_group_demo.name
+    network_type = "ipv4"
+    security_group_ids = [aws_security_group.elasticache_sg.id]
+    tags = {
+        Name = "elasticache-demo"
+    }
+}
+
+resource "aws_security_group" "elasticache_sg" {
+    name        = "elasticache-sg-demo"
+    description = "Allow external access to ElastiCache"
+    vpc_id      = local.vpc_id
+
+    ingress {
+        from_port   = 6379
+        to_port     = 6379
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"] # Replace with a specific IP range for better security
+    }
+
+    egress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "elasticache-sg-demo"
+    }
+}
