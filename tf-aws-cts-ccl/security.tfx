@@ -35,8 +35,8 @@ resource "aws_security_group" "sg-ssh-and-80" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  lifecycle {
-    ignore_changes = [tags]
+  tags = {
+    Author = "bikash"
   }
 
 }
@@ -54,8 +54,8 @@ resource "aws_security_group" "sg-http80-only" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  lifecycle {
-    ignore_changes = [tags]
+  tags = {
+    Author = "bikash"
   }
 
 }
