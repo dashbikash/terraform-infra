@@ -1,0 +1,23 @@
+resource "aws_docdb_cluster" "bikash_docdb_cluster" {
+    cluster_identifier      = "bikash-docdb-cluster"
+    engine                  = "docdb"
+    master_username         = "docdbadmin"
+    master_password         = "ChangeMe12345!"
+    backup_retention_period = 1
+    skip_final_snapshot     = true
+}
+
+resource "aws_docdb_cluster_instance" "bikash_docdb_cluster" {
+    identifier         = "bikash-docdb-cluster-instance"
+    cluster_identifier = aws_docdb_cluster.bikash_docdb_cluster.id
+    instance_class     = "db.t3.medium" # Smallest supported for DocumentDB
+    engine            = "docdb"
+}
+
+resource "aws_docdb_subnet_group" "default" {
+    name       = "bikash-docdb-subnet-group"
+    subnet_ids = local.subnets
+    lifecycle {
+      ignore_changes = [ tags ]
+    }
+}
